@@ -42,6 +42,12 @@ API Prefix: `/api`
 - `GET /api/stations/:id`
 - `GET /api/stations/:id/route?originLat=xx&originLng=yy`
   - Returns route/navigation structure for client maps usage.
+- `GET /api/stations/data`
+  - Returns latest IoT station readings.
+  - Optional query params: `stationId`, `limit`.
+- `POST /api/stations/data`
+  - Saves IoT station data and emits a real-time Socket.IO event.
+  - Body: `stationId`, `temperature`, `humidity`, `smokeLevel`.
 - `POST /api/stations` (Bearer token required)
 - `PUT /api/stations/:id` (Bearer token required)
 - `DELETE /api/stations/:id` (Bearer token required)
@@ -58,6 +64,8 @@ API Prefix: `/api`
 ## Real-time Socket Events
 
 - `station-availability-updated`
+- `station-data`
+- `danger-alert`
 - `slot-booked`
 - `slot-cancelled`
 

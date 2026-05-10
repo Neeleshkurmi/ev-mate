@@ -49,10 +49,24 @@ const stationRouteQuerySchema = Joi.object({
   originLng: Joi.number().min(-180).max(180).required(),
 });
 
+const stationDataSchema = Joi.object({
+  stationId: Joi.string().trim().required(),
+  temperature: Joi.number().required(),
+  humidity: Joi.number().min(0).max(100).required(),
+  smokeLevel: Joi.number().min(0).required(),
+});
+
+const stationDataQuerySchema = Joi.object({
+  stationId: Joi.string().trim(),
+  limit: Joi.number().integer().min(1).max(100).default(20),
+});
+
 module.exports = {
   createStationSchema,
   updateStationSchema,
   stationQuerySchema,
   nearbyStationQuerySchema,
   stationRouteQuerySchema,
+  stationDataSchema,
+  stationDataQuerySchema,
 };

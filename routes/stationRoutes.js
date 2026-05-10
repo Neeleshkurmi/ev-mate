@@ -9,6 +9,8 @@ const {
   getNearbyStations,
   searchStations,
   getStationRoute,
+  streamStationData,
+  getStationData,
 } = require("../controllers/stationController");
 const authMiddleware = require("../middleware/authMiddleware");
 const validateRequest = require("../middleware/validateRequest");
@@ -18,6 +20,8 @@ const {
   stationQuerySchema,
   nearbyStationQuerySchema,
   stationRouteQuerySchema,
+  stationDataSchema,
+  stationDataQuerySchema,
 } = require("../validations/stationValidation");
 
 const router = express.Router();
@@ -34,6 +38,8 @@ router.get(
   validateRequest(stationRouteQuerySchema, "query"),
   getStationRoute
 );
+router.get("/data", validateRequest(stationDataQuerySchema, "query"), getStationData);
+router.post("/data", validateRequest(stationDataSchema), streamStationData);
 router.get("/:id", getStationById);
 router.post("/", authMiddleware, validateRequest(createStationSchema), createStation);
 router.put(

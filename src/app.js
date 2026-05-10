@@ -13,7 +13,7 @@ const env = require("../config/env");
 
 const app = express();
 
-app.set("trust proxy", true);
+app.set("trust proxy", env.NODE_ENV === "production" ? 1 : false);
 app.disable("x-powered-by");
 
 app.use(helmet());

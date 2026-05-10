@@ -300,7 +300,55 @@ const getStationRoute = asyncHandler(async (req, res) => {
   });
 });
 
+const streamStationData = asyncHandler(async (req, res) => {
+  const io = req.app.get("io");
+  const { stationId, temperature, humidity, smokeLevel } = req.body;
+
+  const savedData = await prisma.stationData.create({
+    data: {
+      stationId,
+      temperature,
+      humidity,
+      smokeLevel,
+    },
+  });
+
+  if (io) {
+    io.emit("station-data", savedData);
+
+    if (smokeLevel > 80) {
+      io.emit("danger-alert", {
+        stationId,
+        message: "High smoke detected",
+      });
+    }
+  }
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Station data streamed successfully",
+    data: savedData,
+  });
+});
+
+const getStationData = asyncHandler(async (req, res) => {
+  const { stationId, limit = 20 } = req.query;
+  const readings = await prisma.stationData.findMany({
+    where: stationId ? { stationId } : undefined,
+    orderBy: { createdAt: "desc" },
+    take: Number(limit),
+  });
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Station data fetched successfully",
+    data: readings,
+  });
+});
+
 module.exports = {
+  streamStationData,
+  getStationData,
   getStations,
   getStationById,
   createStation,
