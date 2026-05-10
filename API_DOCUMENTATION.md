@@ -34,10 +34,11 @@ API Prefix: `/api`
 
 ## Station APIs
 
-- `GET /api/stations` (supports `q`, `chargerType`, `availability`, `page`, `limit`)
+- `GET /api/stations` (supports `q`, `chargerType`, `availability`, `minAvailableSlots`, `minPrice`, `maxPrice`, `page`, `limit`)
 - `GET /api/stations/search` (same filters as above)
-- `GET /api/stations/nearby?lat=xx&lng=yy&radiusKm=5`
+- `GET /api/stations/nearby?lat=xx&lng=yy&radiusKm=5&availability=true&chargerType=CCS2&minPrice=10&maxPrice=18`
   - Includes geolocation filtering by Haversine distance.
+  - Supports filters for charger type, slot availability, minimum available slots, price range, and text search.
   - Includes route metadata (`routeUrl`) and attempts Google Distance Matrix enrichments.
 - `GET /api/stations/:id`
 - `GET /api/stations/:id/route?originLat=xx&originLng=yy`

@@ -62,8 +62,14 @@ const applyStationFilters = (stations, query = {}) => {
   const textMatcher = buildTextSearchFilter(query.q, ["name", "address", "chargerType"]);
   const hasSearch = Boolean(textMatcher.$or?.length);
   const searchTerm = hasSearch ? query.q.trim().toLowerCase() : "";
+  const minAvailableSlots =
+    query.minAvailableSlots !== undefined ? Number(query.minAvailableSlots) : undefined;
+  const minPrice = query.minPrice !== undefined ? Number(query.minPrice) : undefined;
+  const maxPrice = query.maxPrice !== undefined ? Number(query.maxPrice) : undefined;
 
   return stations.filter((station) => {
+    const availableSlots = Number(station.availableSlots);
+    const pricePerKwh = Number(station.pricePerKwh);
     const chargerTypeMatch = query.chargerType
       ? station.chargerType.toLowerCase() === String(query.chargerType).toLowerCase()
       : true;
@@ -71,14 +77,25 @@ const applyStationFilters = (stations, query = {}) => {
       query.availability === undefined
         ? true
         : String(query.availability).toLowerCase() === "true"
-          ? station.availableSlots > 0
-          : station.availableSlots === 0;
+          ? availableSlots > 0
+          : availableSlots === 0;
+    const minAvailableSlotsMatch =
+      minAvailableSlots === undefined ? true : availableSlots >= minAvailableSlots;
+    const minPriceMatch = minPrice === undefined ? true : pricePerKwh >= minPrice;
+    const maxPriceMatch = maxPrice === undefined ? true : pricePerKwh <= maxPrice;
     const searchMatch = hasSearch
       ? [station.name, station.address, station.chargerType].some((value) =>
           value.toLowerCase().includes(searchTerm)
         )
       : true;
-    return chargerTypeMatch && availabilityMatch && searchMatch;
+    return (
+      chargerTypeMatch &&
+      availabilityMatch &&
+      minAvailableSlotsMatch &&
+      minPriceMatch &&
+      maxPriceMatch &&
+      searchMatch
+    );
   });
 };
 

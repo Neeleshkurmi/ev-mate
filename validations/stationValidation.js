@@ -28,9 +28,24 @@ const updateStationSchema = Joi.object(stationPayload).min(1);
 const stationQuerySchema = Joi.object({
   chargerType: Joi.string().trim(),
   availability: Joi.boolean(),
+  minAvailableSlots: Joi.number().integer().min(0),
+  minPrice: Joi.number().min(0),
+  maxPrice: Joi.number().min(0),
   q: Joi.string().trim().max(100),
   page: Joi.number().integer().min(1),
   limit: Joi.number().integer().min(1).max(100),
+}).custom((value, helpers) => {
+  if (
+    value.minPrice !== undefined &&
+    value.maxPrice !== undefined &&
+    value.minPrice > value.maxPrice
+  ) {
+    return helpers.error("any.invalid");
+  }
+
+  return value;
+}, "price range validation").messages({
+  "any.invalid": "minPrice cannot be greater than maxPrice",
 });
 
 const nearbyStationQuerySchema = Joi.object({
@@ -39,9 +54,24 @@ const nearbyStationQuerySchema = Joi.object({
   radiusKm: Joi.number().positive().default(5),
   chargerType: Joi.string().trim(),
   availability: Joi.boolean(),
+  minAvailableSlots: Joi.number().integer().min(0),
+  minPrice: Joi.number().min(0),
+  maxPrice: Joi.number().min(0),
   q: Joi.string().trim().max(100),
   page: Joi.number().integer().min(1),
   limit: Joi.number().integer().min(1).max(100),
+}).custom((value, helpers) => {
+  if (
+    value.minPrice !== undefined &&
+    value.maxPrice !== undefined &&
+    value.minPrice > value.maxPrice
+  ) {
+    return helpers.error("any.invalid");
+  }
+
+  return value;
+}, "price range validation").messages({
+  "any.invalid": "minPrice cannot be greater than maxPrice",
 });
 
 const stationRouteQuerySchema = Joi.object({
