@@ -1,0 +1,40 @@
+{
+  "name": "hackathon2026",
+  "version": "1.0.0",
+  "description": "EV charging station locator and slot booking backend",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --watch src --watch config --watch routes server.js",
+    "start": "node server.js",
+    "lint": "echo \"Add linter configuration\"",
+    "seed:stations": "node seeds/seedStations.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy"
+  },
+  "keywords": [],
+  "author": "Hackathon Team",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "axios": "^1.16.0",
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "http-status-codes": "^2.3.0",
+    "joi": "^18.1.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.3"
+  }
+}
