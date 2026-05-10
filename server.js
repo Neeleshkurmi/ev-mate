@@ -5,6 +5,7 @@ const app = require("./src/app");
 const connectDB = require("./config/db");
 const prisma = require("./config/prisma");
 const setupSocket = require("./sockets");
+const runMigrations = require("./utils/runMigrations");
 
 const PORT = env.PORT;
 let server;
@@ -12,6 +13,7 @@ let server;
 const startServer = async () => {
   try {
     await connectDB();
+    await runMigrations();
 
     server = http.createServer(app);
     const io = setupSocket(server);
