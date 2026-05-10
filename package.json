@@ -8,6 +8,7 @@
     "start": "node server.js",
     "lint": "echo \"Add linter configuration\"",
     "seed:stations": "node seeds/seedStations.js",
+    "seed:bhopal": "node seeds/seedBhopalStations.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy"
