@@ -7,8 +7,7 @@ const dummyStations = [
     latitude: 28.6315,
     longitude: 77.2167,
     chargerType: "DC Fast",
-    totalSlots: 12,
-    availableSlots: 5,
+    totalSlots: 12,
     pricePerKwh: 17.5,
   },
   {
@@ -17,8 +16,7 @@ const dummyStations = [
     latitude: 12.9352,
     longitude: 77.6245,
     chargerType: "Type 2",
-    totalSlots: 8,
-    availableSlots: 2,
+    totalSlots: 8,
     pricePerKwh: 15,
   },
   {
@@ -27,8 +25,7 @@ const dummyStations = [
     latitude: 19.0607,
     longitude: 72.8362,
     chargerType: "CCS2",
-    totalSlots: 10,
-    availableSlots: 7,
+    totalSlots: 10,
     pricePerKwh: 18,
   },
   {
@@ -37,8 +34,7 @@ const dummyStations = [
     latitude: 17.433,
     longitude: 78.407,
     chargerType: "CHAdeMO",
-    totalSlots: 6,
-    availableSlots: 1,
+    totalSlots: 6,
     pricePerKwh: 16.5,
   },
   {
@@ -47,8 +43,7 @@ const dummyStations = [
     latitude: 13.0418,
     longitude: 80.2341,
     chargerType: "AC Fast",
-    totalSlots: 9,
-    availableSlots: 4,
+    totalSlots: 9,
     pricePerKwh: 14.2,
   },
   {
@@ -57,8 +52,7 @@ const dummyStations = [
     latitude: 18.5679,
     longitude: 73.9143,
     chargerType: "DC Fast",
-    totalSlots: 14,
-    availableSlots: 9,
+    totalSlots: 14,
     pricePerKwh: 17.8,
   },
   {
@@ -67,8 +61,7 @@ const dummyStations = [
     latitude: 23.047,
     longitude: 72.515,
     chargerType: "Type 2",
-    totalSlots: 7,
-    availableSlots: 0,
+    totalSlots: 7,
     pricePerKwh: 13.9,
   },
   {
@@ -77,8 +70,7 @@ const dummyStations = [
     latitude: 22.5726,
     longitude: 88.433,
     chargerType: "CCS2",
-    totalSlots: 11,
-    availableSlots: 6,
+    totalSlots: 11,
     pricePerKwh: 16.8,
   },
   {
@@ -87,8 +79,7 @@ const dummyStations = [
     latitude: 26.9221,
     longitude: 75.802,
     chargerType: "AC Fast",
-    totalSlots: 5,
-    availableSlots: 3,
+    totalSlots: 5,
     pricePerKwh: 14.8,
   },
   {
@@ -97,8 +88,7 @@ const dummyStations = [
     latitude: 26.8467,
     longitude: 80.9462,
     chargerType: "CHAdeMO",
-    totalSlots: 10,
-    availableSlots: 8,
+    totalSlots: 10,
     pricePerKwh: 15.6,
   },
 ];

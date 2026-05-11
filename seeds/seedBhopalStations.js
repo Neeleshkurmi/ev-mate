@@ -7,8 +7,7 @@ const madhyaPradeshStations = [
     latitude: 23.2334,
     longitude: 77.4347,
     chargerType: "DC Fast",
-    totalSlots: 10,
-    availableSlots: 6,
+    totalSlots: 10,
     pricePerKwh: 16.2,
   },
   {
@@ -17,8 +16,7 @@ const madhyaPradeshStations = [
     latitude: 23.2599,
     longitude: 77.4126,
     chargerType: "CCS2",
-    totalSlots: 8,
-    availableSlots: 4,
+    totalSlots: 8,
     pricePerKwh: 15.8,
   },
   {
@@ -27,8 +25,7 @@ const madhyaPradeshStations = [
     latitude: 23.2215,
     longitude: 77.4419,
     chargerType: "DC Fast",
-    totalSlots: 12,
-    availableSlots: 7,
+    totalSlots: 12,
     pricePerKwh: 17.1,
   },
   {
@@ -37,8 +34,7 @@ const madhyaPradeshStations = [
     latitude: 23.2337,
     longitude: 77.4011,
     chargerType: "Type 2",
-    totalSlots: 6,
-    availableSlots: 3,
+    totalSlots: 6,
     pricePerKwh: 14.9,
   },
   {
@@ -47,8 +43,7 @@ const madhyaPradeshStations = [
     latitude: 23.2321,
     longitude: 77.4295,
     chargerType: "CCS2",
-    totalSlots: 9,
-    availableSlots: 5,
+    totalSlots: 9,
     pricePerKwh: 16.5,
   },
   {
@@ -57,8 +52,7 @@ const madhyaPradeshStations = [
     latitude: 23.1815,
     longitude: 77.418,
     chargerType: "AC Fast",
-    totalSlots: 7,
-    availableSlots: 2,
+    totalSlots: 7,
     pricePerKwh: 13.8,
   },
   {
@@ -67,8 +61,7 @@ const madhyaPradeshStations = [
     latitude: 23.2786,
     longitude: 77.4644,
     chargerType: "DC Fast",
-    totalSlots: 10,
-    availableSlots: 8,
+    totalSlots: 10,
     pricePerKwh: 16.9,
   },
   {
@@ -77,8 +70,7 @@ const madhyaPradeshStations = [
     latitude: 23.2878,
     longitude: 77.3379,
     chargerType: "Type 2",
-    totalSlots: 6,
-    availableSlots: 4,
+    totalSlots: 6,
     pricePerKwh: 14.2,
   },
   {
@@ -87,8 +79,7 @@ const madhyaPradeshStations = [
     latitude: 23.2474,
     longitude: 77.5024,
     chargerType: "CHAdeMO",
-    totalSlots: 8,
-    availableSlots: 3,
+    totalSlots: 8,
     pricePerKwh: 15.4,
   },
   {
@@ -97,8 +88,7 @@ const madhyaPradeshStations = [
     latitude: 23.2872,
     longitude: 77.3498,
     chargerType: "CCS2",
-    totalSlots: 11,
-    availableSlots: 6,
+    totalSlots: 11,
     pricePerKwh: 17.3,
   },
   {
@@ -107,8 +97,7 @@ const madhyaPradeshStations = [
     latitude: 22.7533,
     longitude: 75.8937,
     chargerType: "DC Fast",
-    totalSlots: 12,
-    availableSlots: 8,
+    totalSlots: 12,
     pricePerKwh: 17,
   },
   {
@@ -117,8 +106,7 @@ const madhyaPradeshStations = [
     latitude: 22.7244,
     longitude: 75.8839,
     chargerType: "CCS2",
-    totalSlots: 9,
-    availableSlots: 5,
+    totalSlots: 9,
     pricePerKwh: 16.6,
   },
   {
@@ -127,8 +115,7 @@ const madhyaPradeshStations = [
     latitude: 23.5236,
     longitude: 77.8139,
     chargerType: "Type 2",
-    totalSlots: 7,
-    availableSlots: 4,
+    totalSlots: 7,
     pricePerKwh: 14.7,
   },
   {
@@ -137,8 +124,7 @@ const madhyaPradeshStations = [
     latitude: 23.5271,
     longitude: 77.8081,
     chargerType: "AC Fast",
-    totalSlots: 6,
-    availableSlots: 2,
+    totalSlots: 6,
     pricePerKwh: 13.9,
   },
   {
@@ -147,8 +133,7 @@ const madhyaPradeshStations = [
     latitude: 23.1765,
     longitude: 75.7885,
     chargerType: "Type 2",
-    totalSlots: 6,
-    availableSlots: 3,
+    totalSlots: 6,
     pricePerKwh: 14.5,
   },
   {
@@ -157,8 +142,7 @@ const madhyaPradeshStations = [
     latitude: 23.1828,
     longitude: 75.7682,
     chargerType: "CCS2",
-    totalSlots: 8,
-    availableSlots: 5,
+    totalSlots: 8,
     pricePerKwh: 16.1,
   },
   {
@@ -167,8 +151,7 @@ const madhyaPradeshStations = [
     latitude: 23.1686,
     longitude: 79.9339,
     chargerType: "DC Fast",
-    totalSlots: 10,
-    availableSlots: 6,
+    totalSlots: 10,
     pricePerKwh: 16.8,
   },
   {
@@ -177,8 +160,7 @@ const madhyaPradeshStations = [
     latitude: 23.1609,
     longitude: 79.9499,
     chargerType: "CHAdeMO",
-    totalSlots: 7,
-    availableSlots: 3,
+    totalSlots: 7,
     pricePerKwh: 15.6,
   },
   {
@@ -187,8 +169,7 @@ const madhyaPradeshStations = [
     latitude: 26.2183,
     longitude: 78.1828,
     chargerType: "CCS2",
-    totalSlots: 10,
-    availableSlots: 7,
+    totalSlots: 10,
     pricePerKwh: 16.4,
   },
   {
@@ -197,8 +178,7 @@ const madhyaPradeshStations = [
     latitude: 26.2144,
     longitude: 78.1827,
     chargerType: "DC Fast",
-    totalSlots: 12,
-    availableSlots: 6,
+    totalSlots: 12,
     pricePerKwh: 17.2,
   },
   {
@@ -207,8 +187,7 @@ const madhyaPradeshStations = [
     latitude: 23.8388,
     longitude: 78.7378,
     chargerType: "Type 2",
-    totalSlots: 8,
-    availableSlots: 4,
+    totalSlots: 8,
     pricePerKwh: 14.8,
   },
   {
@@ -217,8 +196,7 @@ const madhyaPradeshStations = [
     latitude: 23.8315,
     longitude: 78.746,
     chargerType: "AC Fast",
-    totalSlots: 6,
-    availableSlots: 2,
+    totalSlots: 6,
     pricePerKwh: 13.7,
   },
   {
@@ -227,8 +205,7 @@ const madhyaPradeshStations = [
     latitude: 22.9676,
     longitude: 76.0534,
     chargerType: "DC Fast",
-    totalSlots: 9,
-    availableSlots: 5,
+    totalSlots: 9,
     pricePerKwh: 16.3,
   },
   {
@@ -237,8 +214,7 @@ const madhyaPradeshStations = [
     latitude: 22.9623,
     longitude: 76.0508,
     chargerType: "CCS2",
-    totalSlots: 8,
-    availableSlots: 4,
+    totalSlots: 8,
     pricePerKwh: 15.9,
   },
   {
@@ -247,8 +223,7 @@ const madhyaPradeshStations = [
     latitude: 23.2032,
     longitude: 77.0844,
     chargerType: "DC Fast",
-    totalSlots: 10,
-    availableSlots: 7,
+    totalSlots: 10,
     pricePerKwh: 16.7,
   },
   {
@@ -257,8 +232,7 @@ const madhyaPradeshStations = [
     latitude: 23.2002,
     longitude: 77.087,
     chargerType: "Type 2",
-    totalSlots: 6,
-    availableSlots: 3,
+    totalSlots: 6,
     pricePerKwh: 14.4,
   },
   {
@@ -267,8 +241,7 @@ const madhyaPradeshStations = [
     latitude: 22.7441,
     longitude: 77.7369,
     chargerType: "CCS2",
-    totalSlots: 8,
-    availableSlots: 5,
+    totalSlots: 8,
     pricePerKwh: 15.7,
   },
   {
@@ -277,8 +250,7 @@ const madhyaPradeshStations = [
     latitude: 22.7523,
     longitude: 77.7225,
     chargerType: "AC Fast",
-    totalSlots: 6,
-    availableSlots: 2,
+    totalSlots: 6,
     pricePerKwh: 14.1,
   },
   {
@@ -287,8 +259,7 @@ const madhyaPradeshStations = [
     latitude: 23.3318,
     longitude: 77.7811,
     chargerType: "Type 2",
-    totalSlots: 6,
-    availableSlots: 3,
+    totalSlots: 6,
     pricePerKwh: 14.3,
   },
   {
@@ -297,8 +268,7 @@ const madhyaPradeshStations = [
     latitude: 23.3292,
     longitude: 77.7931,
     chargerType: "CCS2",
-    totalSlots: 7,
-    availableSlots: 4,
+    totalSlots: 7,
     pricePerKwh: 15.2,
   },
   {
@@ -307,8 +277,7 @@ const madhyaPradeshStations = [
     latitude: 24.6005,
     longitude: 80.8322,
     chargerType: "DC Fast",
-    totalSlots: 10,
-    availableSlots: 6,
+    totalSlots: 10,
     pricePerKwh: 16.6,
   },
   {
@@ -317,8 +286,7 @@ const madhyaPradeshStations = [
     latitude: 24.5797,
     longitude: 80.8329,
     chargerType: "CHAdeMO",
-    totalSlots: 7,
-    availableSlots: 3,
+    totalSlots: 7,
     pricePerKwh: 15.5,
   },
 ];

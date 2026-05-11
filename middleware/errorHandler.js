@@ -11,7 +11,10 @@ const errorHandler = (err, req, res, _next) => {
   }
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    if (err.code === "P2002") {
+    if (err.code === "P2034") {
+      statusCode = StatusCodes.CONFLICT;
+      message = "Could not complete booking due to a concurrent update; please retry";
+    } else if (err.code === "P2002") {
       statusCode = StatusCodes.CONFLICT;
       message = "Unique constraint violation";
     } else if (err.code === "P2025") {

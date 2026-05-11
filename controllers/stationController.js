@@ -5,6 +5,7 @@ const prisma = require("../config/prisma");
 const env = require("../config/env");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
+const bookingRepository = require("../repositories/bookingRepository");
 const {
   getPaginationOptions,
   buildPaginationMeta,
@@ -28,12 +29,28 @@ const getDistanceKm = (lat1, lng1, lat2, lng2) => {
   return EARTH_RADIUS_KM * c;
 };
 
-const normalizeStation = (station) => ({
-  ...station,
-  latitude: Number(station.latitude),
-  longitude: Number(station.longitude),
-  pricePerKwh: Number(station.pricePerKwh),
-});
+const buildOccupancyMap = async () => {
+  const now = new Date();
+  const rows = await bookingRepository.groupLiveBookingsByStation(prisma, now);
+  const map = {};
+  for (const row of rows) {
+    map[row.stationId] = row._count._all;
+  }
+  return map;
+};
+
+const normalizeStation = (station, occupancyMap = {}) => {
+  const live = occupancyMap[station.id] ?? 0;
+  const totalSlots = Number(station.totalSlots);
+  return {
+    ...station,
+    latitude: Number(station.latitude),
+    longitude: Number(station.longitude),
+    pricePerKwh: Number(station.pricePerKwh),
+    liveBookedConnectors: live,
+    freeConnectorsNow: Math.max(0, totalSlots - live),
+  };
+};
 
 const validateCoordinates = (latitude, longitude) => {
   if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
@@ -58,17 +75,23 @@ const validateCoordinates = (latitude, longitude) => {
   }
 };
 
-const applyStationFilters = (stations, query = {}) => {
-  const textMatcher = buildTextSearchFilter(query.q, ["name", "address", "chargerType"]);
-  const hasSearch = Boolean(textMatcher.$or?.length);
-  const searchTerm = hasSearch ? query.q.trim().toLowerCase() : "";
-  const minAvailableSlots =
-    query.minAvailableSlots !== undefined ? Number(query.minAvailableSlots) : undefined;
-  const minPrice = query.minPrice !== undefined ? Number(query.minPrice) : undefined;
-  const maxPrice = query.maxPrice !== undefined ? Number(query.maxPrice) : undefined;
+const applyStationFilters = (stations, query = {}, occupancyMap = {}) =>
+  stations.filter((station) => {
+    const textMatcher = buildTextSearchFilter(query.q, ["name", "address", "chargerType"]);
+    const hasSearch = Boolean(textMatcher.$or?.length);
+    const searchTerm = hasSearch ? query.q.trim().toLowerCase() : "";
+    const minFree =
+      query.minFreeConnectors !== undefined
+        ? Number(query.minFreeConnectors)
+        : query.minAvailableSlots !== undefined
+          ? Number(query.minAvailableSlots)
+          : undefined;
+    const minPrice = query.minPrice !== undefined ? Number(query.minPrice) : undefined;
+    const maxPrice = query.maxPrice !== undefined ? Number(query.maxPrice) : undefined;
 
-  return stations.filter((station) => {
-    const availableSlots = Number(station.availableSlots);
+    const totalSlots = Number(station.totalSlots);
+    const live = occupancyMap[station.id] ?? 0;
+    const freeConnectorsNow = Math.max(0, totalSlots - live);
     const pricePerKwh = Number(station.pricePerKwh);
     const chargerTypeMatch = query.chargerType
       ? station.chargerType.toLowerCase() === String(query.chargerType).toLowerCase()
@@ -77,10 +100,9 @@ const applyStationFilters = (stations, query = {}) => {
       query.availability === undefined
         ? true
         : String(query.availability).toLowerCase() === "true"
-          ? availableSlots > 0
-          : availableSlots === 0;
-    const minAvailableSlotsMatch =
-      minAvailableSlots === undefined ? true : availableSlots >= minAvailableSlots;
+          ? freeConnectorsNow > 0
+          : freeConnectorsNow === 0;
+    const minFreeMatch = minFree === undefined ? true : freeConnectorsNow >= minFree;
     const minPriceMatch = minPrice === undefined ? true : pricePerKwh >= minPrice;
     const maxPriceMatch = maxPrice === undefined ? true : pricePerKwh <= maxPrice;
     const searchMatch = hasSearch
@@ -91,13 +113,12 @@ const applyStationFilters = (stations, query = {}) => {
     return (
       chargerTypeMatch &&
       availabilityMatch &&
-      minAvailableSlotsMatch &&
+      minFreeMatch &&
       minPriceMatch &&
       maxPriceMatch &&
       searchMatch
     );
   });
-};
 
 const mapRouteInfo = async (originLat, originLng, station) => {
   const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${station.latitude},${station.longitude}&travelmode=driving`;
@@ -139,8 +160,11 @@ const getStations = asyncHandler(async (req, res) => {
   const allStations = await prisma.station.findMany({
     orderBy: { createdAt: "desc" },
   });
-  const filtered = applyStationFilters(allStations, req.query);
-  const stations = filtered.slice(skip, skip + limit).map(normalizeStation);
+  const occupancyMap = await buildOccupancyMap();
+  const filtered = applyStationFilters(allStations, req.query, occupancyMap);
+  const stations = filtered
+    .slice(skip, skip + limit)
+    .map((s) => normalizeStation(s, occupancyMap));
 
   const total = filtered.length;
 
@@ -161,10 +185,12 @@ const getStationById = asyncHandler(async (req, res) => {
     throw new ApiError(StatusCodes.NOT_FOUND, "Charging station not found");
   }
 
+  const occupancyMap = await buildOccupancyMap();
+
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Station fetched successfully",
-    data: normalizeStation(station),
+    data: normalizeStation(station, occupancyMap),
   });
 });
 
@@ -172,17 +198,13 @@ const createStation = asyncHandler(async (req, res) => {
   const { latitude, longitude } = req.body;
   validateCoordinates(Number(latitude), Number(longitude));
 
-  if (req.body.availableSlots > req.body.totalSlots) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      "availableSlots cannot be greater than totalSlots"
-    );
-  }
   const station = await prisma.station.create({ data: req.body });
+  const occupancyMap = await buildOccupancyMap();
+
   res.status(StatusCodes.CREATED).json({
     success: true,
     message: "Station created successfully",
-    data: normalizeStation(station),
+    data: normalizeStation(station, occupancyMap),
   });
 });
 
@@ -212,10 +234,12 @@ const updateStation = asyncHandler(async (req, res) => {
     data: req.body,
   });
 
+  const occupancyMap = await buildOccupancyMap();
+
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Charging station updated successfully",
-    data: normalizeStation(station),
+    data: normalizeStation(station, occupancyMap),
   });
 });
 
@@ -248,6 +272,7 @@ const getNearbyStations = asyncHandler(async (req, res) => {
 
   const { page, limit, skip } = getPaginationOptions(req.query);
   const allStations = await prisma.station.findMany();
+  const occupancyMap = await buildOccupancyMap();
   const inRadius = allStations
     .map((station) => {
       const distanceKm = getDistanceKm(
@@ -261,11 +286,11 @@ const getNearbyStations = asyncHandler(async (req, res) => {
     .filter((station) => station.distanceKm <= radiusKm)
     .sort((a, b) => a.distanceKm - b.distanceKm);
 
-  const filtered = applyStationFilters(inRadius, req.query);
+  const filtered = applyStationFilters(inRadius, req.query, occupancyMap);
   const paginated = filtered.slice(skip, skip + limit);
   const stations = await Promise.all(
     paginated.map(async (station) => ({
-      ...normalizeStation(station),
+      ...normalizeStation(station, occupancyMap),
       route: await mapRouteInfo(latitude, longitude, station),
     }))
   );
@@ -284,8 +309,11 @@ const searchStations = asyncHandler(async (req, res) => {
   const allStations = await prisma.station.findMany({
     orderBy: { createdAt: "desc" },
   });
-  const filtered = applyStationFilters(allStations, req.query);
-  const stations = filtered.slice(skip, skip + limit).map(normalizeStation);
+  const occupancyMap = await buildOccupancyMap();
+  const filtered = applyStationFilters(allStations, req.query, occupancyMap);
+  const stations = filtered
+    .slice(skip, skip + limit)
+    .map((s) => normalizeStation(s, occupancyMap));
   const total = filtered.length;
 
   res.status(StatusCodes.OK).json({

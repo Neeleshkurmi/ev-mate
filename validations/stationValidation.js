@@ -7,7 +7,6 @@ const stationPayload = {
   longitude: Joi.number().min(-180).max(180),
   chargerType: Joi.string().trim().min(2).max(60),
   totalSlots: Joi.number().integer().min(1),
-  availableSlots: Joi.number().integer().min(0),
   pricePerKwh: Joi.number().min(0),
 };
 
@@ -19,7 +18,6 @@ const createStationSchema = Joi.object({
   longitude: stationPayload.longitude.required(),
   chargerType: stationPayload.chargerType.required(),
   totalSlots: stationPayload.totalSlots.required(),
-  availableSlots: stationPayload.availableSlots.required(),
   pricePerKwh: stationPayload.pricePerKwh.required(),
 });
 
@@ -28,6 +26,7 @@ const updateStationSchema = Joi.object(stationPayload).min(1);
 const stationQuerySchema = Joi.object({
   chargerType: Joi.string().trim(),
   availability: Joi.boolean(),
+  minFreeConnectors: Joi.number().integer().min(0),
   minAvailableSlots: Joi.number().integer().min(0),
   minPrice: Joi.number().min(0),
   maxPrice: Joi.number().min(0),
@@ -54,6 +53,7 @@ const nearbyStationQuerySchema = Joi.object({
   radiusKm: Joi.number().positive().default(5),
   chargerType: Joi.string().trim(),
   availability: Joi.boolean(),
+  minFreeConnectors: Joi.number().integer().min(0),
   minAvailableSlots: Joi.number().integer().min(0),
   minPrice: Joi.number().min(0),
   maxPrice: Joi.number().min(0),
@@ -91,6 +91,22 @@ const stationDataQuerySchema = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(20),
 });
 
+const stationAvailabilityQuerySchema = Joi.object({
+  date: Joi.string()
+    .pattern(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .messages({ "string.pattern.base": "date must be YYYY-MM-DD (UTC day)" }),
+});
+
+const stationFreeSlotsQuerySchema = Joi.object({
+  date: Joi.string()
+    .pattern(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .messages({ "string.pattern.base": "date must be YYYY-MM-DD (UTC day)" }),
+  durationMinutes: Joi.number().integer().min(15).max(24 * 60).default(60),
+  stepMinutes: Joi.number().integer().min(5).max(120).default(15),
+});
+
 module.exports = {
   createStationSchema,
   updateStationSchema,
@@ -99,4 +115,6 @@ module.exports = {
   stationRouteQuerySchema,
   stationDataSchema,
   stationDataQuerySchema,
+  stationAvailabilityQuerySchema,
+  stationFreeSlotsQuerySchema,
 };

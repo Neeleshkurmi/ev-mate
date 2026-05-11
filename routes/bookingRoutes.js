@@ -14,6 +14,7 @@ const {
 
 const router = express.Router();
 
+router.get("/user", authMiddleware, getUserBookings);
 router.post(
   "/",
   authMiddleware,
@@ -26,6 +27,5 @@ router.delete(
   validateRequest(bookingIdParamSchema, "params"),
   cancelBooking
 );
-router.get("/user", authMiddleware, getUserBookings);
 
 module.exports = router;

@@ -8,39 +8,13 @@ const registerStationSocketHandlers = (io, socket) => {
   });
 };
 
-const emitStationAvailabilityUpdate = (io, stationId, availableSlots) => {
-  const payload = { stationId, availableSlots };
-
-  io.emit("station-availability-updated", payload);
-  io.to(`station-${stationId}`).emit("station-availability-updated", payload);
-};
-
-const emitSlotBooked = (io, stationId, booking) => {
-  const payload = {
-    stationId,
-    bookingId: booking.id,
-    slotTime: booking.slotTime,
-    bookingStatus: booking.bookingStatus,
-  };
-
-  io.emit("slot-booked", payload);
-  io.to(`station-${stationId}`).emit("slot-booked", payload);
-};
-
-const emitSlotCancelled = (io, stationId, bookingId) => {
-  const payload = {
-    stationId,
-    bookingId,
-    bookingStatus: "cancelled",
-  };
-
-  io.emit("slot-cancelled", payload);
-  io.to(`station-${stationId}`).emit("slot-cancelled", payload);
+const emitStationStateUpdated = (io, stationId, stationState) => {
+  // Emit ONLY computed aggregated station state.
+  io.emit("station-state-updated", stationState);
+  io.to(`station-${stationId}`).emit("station-state-updated", stationState);
 };
 
 module.exports = {
   registerStationSocketHandlers,
-  emitStationAvailabilityUpdate,
-  emitSlotBooked,
-  emitSlotCancelled,
+  emitStationStateUpdated,
 };

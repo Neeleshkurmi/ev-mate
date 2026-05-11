@@ -7,6 +7,9 @@ const prisma = require("./config/prisma");
 const setupSocket = require("./sockets");
 const runMigrations = require("./utils/runMigrations");
 const { seedBhopalStations } = require("./seeds/seedBhopalStations");
+const { startBookingScheduler } = require("./schedulers/bookingScheduler");
+const { startAggregationEventHandlers } = require("./aggregation/registerEventHandlers");
+const { startProviderStaleScheduler } = require("./schedulers/providerStaleScheduler");
 
 const PORT = env.PORT;
 let server;
@@ -20,6 +23,10 @@ const startServer = async () => {
     server = http.createServer(app);
     const io = setupSocket(server);
     app.set("io", io);
+
+    startAggregationEventHandlers({ io });
+    startBookingScheduler();
+    startProviderStaleScheduler();
 
     server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

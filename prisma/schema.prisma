@@ -8,10 +8,12 @@ datasource db {
 }
 
 enum BookingStatus {
-  booked
-  cancelled
-  completed
+  BOOKED
+  COMPLETED
+  CANCELLED
+  EXPIRED
 }
+
 model StationData {
   id           String   @id @default(uuid())
   stationId    String
@@ -20,6 +22,7 @@ model StationData {
   smokeLevel   Float
   createdAt    DateTime @default(now())
 }
+
 model User {
   id        String    @id @default(uuid())
   name      String
@@ -33,31 +36,113 @@ model User {
 }
 
 model Station {
-  id             String    @id @default(uuid())
-  name           String
-  address        String
-  latitude       Float
-  longitude      Float
-  chargerType    String
-  totalSlots     Int
-  availableSlots Int
-  pricePerKwh    Float
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  bookings       Booking[]
+  id          String    @id @default(uuid())
+  name        String
+  address     String
+  latitude    Float
+  longitude   Float
+  chargerType String
+  totalSlots  Int
+  pricePerKwh Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
 }
 
 model Booking {
-  id            String        @id @default(uuid())
-  userId        String
-  stationId     String
-  slotTime      DateTime
-  bookingStatus BookingStatus @default(booked)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  station       Station       @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  id        String        @id @default(uuid())
+  userId    String
+  stationId String
+  startTime DateTime
+  endTime   DateTime
+  status    BookingStatus @default(BOOKED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  station   Station       @relation(fields: [stationId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt(sort: Desc)])
-  @@index([stationId, slotTime])
+  @@index([stationId, status, startTime])
+  @@index([stationId, startTime, endTime])
+}
+
+enum ChargerStatus {
+  AVAILABLE
+  BUSY
+  OFFLINE
+  UNKNOWN
+}
+
+model Provider {
+  id        String   @id @default(uuid())
+  name      String
+  apiKey    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  telemetry ProviderTelemetry[]
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model ProviderTelemetry {
+  id              String        @id @default(uuid())
+  providerId      String
+  stationId       String
+  chargerStatus   ChargerStatus
+  powerUsage      Float?
+  temperature      Float?
+  activeSessions  Int?
+  providerTimestamp DateTime
+  createdAt       DateTime      @default(now())
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  station  Station  @relation(fields: [stationId], references: [id], onDelete: Cascade)
+
+  @@index([stationId, providerTimestamp(sort: Desc)])
+}
+
+model StationState {
+  id                       String        @id @default(uuid())
+  stationId                String        @unique
+  activeBookings          Int
+  occupancyPercentage     Float
+  availableWindows        Json
+  estimatedWaitTimeSeconds Int?
+  chargerStatus           ChargerStatus
+  providerOnline          Boolean
+  currentActiveSessions   Int
+  liveBookedConnectors    Int
+  bookingUtilization      Float
+  lastProviderTimestamp   DateTime?
+  lastUpdated              DateTime      @default(now())
+
+  station Station @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  snapshots AggregationSnapshot[]
+
+  @@index([stationId, lastUpdated(sort: Desc)])
+}
+
+model AggregationSnapshot {
+  id          String   @id @default(uuid())
+  stationId   String
+  createdAt   DateTime @default(now())
+  payload     Json
+
+  station     Station @relation(fields: [stationId], references: [id], onDelete: Cascade)
+
+  @@index([stationId, createdAt(sort: Desc)])
+}
+
+model ChargingSession {
+  id               String   @id @default(uuid())
+  stationId        String
+  bookingId        String?
+  providerTelemetryId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  station Station @relation(fields: [stationId], references: [id], onDelete: Cascade)
+
+  @@index([stationId, createdAt(sort: Desc)])
 }
